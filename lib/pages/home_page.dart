@@ -16,12 +16,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    fetchRadios();
-  }
+      fetchRadios();
+    }
+
 
   fetchRadios() async {
     final radioJson = await rootBundle.loadString("assets/radio.json");
-    radios = MyRadioList.fromJson(radioJson).radios;
+    radios = MyRadioList
+        .fromJson(radioJson)
+        .radios;
     print(radios);
     setState(() {});
   }
@@ -37,15 +40,15 @@ class _HomePageState extends State<HomePage> {
           VxAnimatedBox()
               .size(context.screenWidth, context.screenHeight)
               .withGradient(
-                LinearGradient(
-                  colors: [
-                    AIUtil.primaryColor1,
-                    AIUtil.PrimaryColor2,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              )
+            LinearGradient(
+              colors: [
+                AIUtil.primaryColor1,
+                AIUtil.PrimaryColor2,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          )
               .make(),
           //here we have added the transparent app bar
           //shimmer is used for effect
@@ -71,31 +74,31 @@ class _HomePageState extends State<HomePage> {
                     5.heightBox,
                     rad.tagline.text.sm.semiBold.make(),
                   ],
-                  crossAlignment: CrossAxisAlignment.center,
+                    crossAlignment: CrossAxisAlignment.center,
                   ),
                 ),
                 Align(
-                  alignment: Alignment.center,
-                  child: [Icon(
-                    CupertinoIcons.play_circle,
-                    color: Colors.white,
-                  ),
-                    10.heightBox,
-                    "Double tap to play".text.gray300.make(),
-                  ].vStack())
+                    alignment: Alignment.center,
+                    child: [Icon(
+                      CupertinoIcons.play_circle,
+                      color: Colors.white,
+                    ),
+                      10.heightBox,
+                      "Double tap to play".text.gray300.make(),
+                    ].vStack())
 
               ]))
                   .bgImage(
-                    DecorationImage(
-                        image: NetworkImage(rad.image),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                            Colors.black.withOpacity(0.3), BlendMode.darken)),
-                  )
-              .border(color: Colors.black, width: 5.0)
+                DecorationImage(
+                    image: NetworkImage(rad.image),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.3), BlendMode.darken)),
+              )
+                  .border(color: Colors.black, width: 5.0)
                   .withRounded(value: 60.0)
                   .make()
-              .p16().centered();
+                  .p16().centered();
             },
           )
         ],
