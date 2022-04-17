@@ -1,5 +1,6 @@
 import 'package:ai_radio/model/radio.dart';
 import 'package:ai_radio/utils/ai_utils.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,14 +12,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   List<MyRadio> radios = [];
+  List<MyRadio> radios = [];
+  late MyRadio _selectedRadio;
+  late Color _selectedcolor;
+  bool _isPlaying = false;
 
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
 
   @override
   void initState() {
     super.initState();
     fetchRadios();
+    _audioPlayer.onPlayerStateChanged.listen((event) {
+      if(event == PlayerState.PLAYING)
+    {
+      _isPlaying == true;
+    }else{
+        _isPlaying == false;
+      }
+    });
   }
 
   fetchRadios() async {
@@ -26,6 +39,15 @@ class _HomePageState extends State<HomePage> {
     radios = MyRadioList.fromJson(radioJson).radios;
     print(radios);
     setState(() {});
+  }
+
+  _playMusic(String url){
+    _audioPlayer.play(url);
+    _selectedRadio = radios.firstWhere((element) => element.url == url);
+    print(_selectedRadio.name);
+    setState(() {
+
+    });
   }
 
   @override
@@ -60,6 +82,8 @@ class _HomePageState extends State<HomePage> {
           ).h(80).p8(),
           //it will show the item count and show the radio output
           VxSwiper.builder(
+
+            scrollDirection: Axis.horizontal,
             itemCount: radios.length,
             aspectRatio: 1.0,
             enlargeCenterPage: true,
@@ -115,17 +139,32 @@ class _HomePageState extends State<HomePage> {
                   .border(color: Colors.black, width: 5.0)
                   .withRounded(value: 60.0)
                   .make()
-                  .onInkDoubleTap(() {})
+                  .onInkDoubleTap(() {
+                    _playMusic(rad.url);
+              })
                   .p16();
             },
           ).centered(),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Icon(
-              CupertinoIcons.stop_circle,
+            child: [
+              if(_isPlaying)
+                "Playing Now - ${_selectedRadio.name} FM" .text.makeCentered(),
+              Icon(
+             _isPlaying ?
+             CupertinoIcons.stop_circle :
+             CupertinoIcons.play_circle,
               color: Colors.white,
               size: 50.0,
-            ),
+            ).onInkTap(() {
+              if(_isPlaying){
+                _audioPlayer.stop();
+              }else{
+                _playMusic(_selectedRadio.url);
+              }
+              })
+
+            ].vStack(),
           ).pOnly(bottom: context.percentHeight * 12)
         ],
         fit: StackFit.expand,
